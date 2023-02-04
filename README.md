@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/e28hdsp6575ac6lf?svg=true)](https://ci.appveyor.com/project/AlexWEBArt/ahj-helpdesk-frontend)
+https://alexwebart.github.io/AHJ-HelpDesk-frontend/
+
 Правила сдачи задания:
 
 1. **Важно**: в рамках этого ДЗ можно использовать npm (а значит, никакого `yarn.lock` в репозитории быть не должно)
