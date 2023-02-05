@@ -151,13 +151,14 @@ h1 {
 }
 
 .btn_update_img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    margin: 1px;
     cursor: pointer;
 }
 
 .popup_container {
-    width: 400px;
+    width: 40%;
     margin: 100px;
     padding: 20px;
     overflow: auto;
@@ -199,4 +200,11 @@ h1 {
     background: #fff;
     box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
     z-index: 999;
+}
+
+@media (max-width: 767px) {
+    .popup-btn,
+    .Input_text {
+        text-align: center;
+    }
 }
