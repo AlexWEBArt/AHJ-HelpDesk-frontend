@@ -9,7 +9,7 @@ const storage = new Storage();
 // storage.clear()
 const dataBase = storage.load();
 
-document.querySelector('.container').style.backgroundImage = `url(${background})`;
+document.querySelector('body').style.backgroundImage = `url(${background})`;
 
 const popup = new Popup(storage);
 const renderingNote = new RenderingNote(storage, popup);

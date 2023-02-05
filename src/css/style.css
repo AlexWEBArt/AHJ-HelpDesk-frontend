@@ -1,4 +1,9 @@
+html {
+    height: 100%;
+}
+
 body {
+    min-height: 100%;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 16px;
     line-height: 1.42857143;
@@ -78,11 +83,11 @@ h1 {
 }
 
 .status {
-    width: 10%;
+    min-width: 10%;
 }
 
 .name {
-    width: 50%;
+    min-width: 50%;
     margin: auto;
     display: inline-block;
     text-align: left;
@@ -97,11 +102,11 @@ h1 {
 }
 
 .created {
-    width: 20%;
+    min-width: 20%;
 }
 
 .action_edit {
-    width: 20%;
+    min-width: 20%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,9 +167,10 @@ h1 {
     margin: 100px;
     padding: 20px;
     overflow: auto;
-    position: absolute;
-    top: 20px; 
-    left: 20px;
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    transform: translate(-50%, -50%);
     background-color: #fff;
     border: 2px solid black;
 }
@@ -206,5 +212,10 @@ h1 {
     .popup-btn,
     .Input_text {
         text-align: center;
+    }
+
+    .list_editor {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
