@@ -210,8 +210,8 @@ export default class Popup {
     // if (this.container) {
     //   this.openPopup(this.container);
     // } else {
-      this.openPopup(document.querySelector('.app_container'));
-      this.activEvent = document.querySelector('.btn_update_img');
+    this.openPopup(document.querySelector('.app_container'));
+    this.activEvent = document.querySelector('.btn_update_img');
     // }
 
     const inputName = document.querySelector('.input_name');
