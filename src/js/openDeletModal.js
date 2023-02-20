@@ -36,7 +36,13 @@ export default function openDeletModal(ticket) {
   btnCancel.addEventListener('click', () => document.querySelector('.popup_container').remove());
 
   btnAgree.addEventListener('click', () => {
-    new Storage().removeTicket(ticket.getAttribute('id'));
+    // new Storage().removeTicket(ticket.getAttribute('id'));
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('DELETE', 'http://localhost:7072/deleteTicket');
+
+    xhr.send(ticket.getAttribute('id'));
+
     ticket.remove();
     document.querySelector('.popup_container').remove();
   });

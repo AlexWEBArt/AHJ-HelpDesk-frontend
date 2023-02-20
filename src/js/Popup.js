@@ -33,7 +33,10 @@ export default class Popup {
       const btnCancel = document.createElement('BUTTON');
       const btnSave = document.createElement('BUTTON');
 
+      formPopup.classList.add('form_popup');
       formPopup.setAttribute('novalidate', true);
+      formPopup.method = 'POST';
+      formPopup.action= 'http://localhost:7070'
       containerPopup.classList.add('popup_container');
       popupControlName.classList.add('popup-control');
       popupDescription.classList.add('popup-control');
@@ -187,32 +190,65 @@ export default class Popup {
   }
 
   saveInputNote() {
+    const formPopup = document.querySelector('.form_popup')
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
+
 
     if (this.data === null) {
       this.data = {};
     }
 
-    const id = performance.now();
-    this.data[id] = {};
-    this.data[id].id = id;
-    this.data[id].name = inputName.value;
-    this.data[id].description = textAreaDescription.value;
-    this.data[id].status = false;
-    this.data[id].created = Popup.getCreationDate();
+    // const id = performance.now();
+    // this.data[id] = {};
+    // this.data[id].id = id;
+    // this.data[id].name = inputName.value;
+    // this.data[id].description = textAreaDescription.value;
+    // this.data[id].status = false;
+    // this.data[id].created = Popup.getCreationDate();
 
-    this.storage.save(this.data);
-    this.renderingNote.action(this.data[id]);
+    const body = {
+      name : inputName.value,
+      description: textAreaDescription.value
+    };
+
+    // for (let key of Object.keys(this.data[id])) {
+    //   body.push(key + " & " + encodeURIComponent(this.data[id][key]))
+    // }
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+
+      console.log(xhr.responseText);
+    }
+
+    xhr.open('PUT', 'http://localhost:7072/createNewTicket');
+    
+    xhr.send(JSON.stringify(body));
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+              const data = JSON.parse(xhr.responseText);
+              console.log(data)
+              this.renderingNote.action(data);
+          } catch (e) {
+              console.error(e);
+          }
+      }
+    });
+
+
+    // this.storage.save(this.data);
+    
   }
 
   preUpdateNote(listEditor) {
-    // if (this.container) {
-    //   this.openPopup(this.container);
-    // } else {
-    this.openPopup(document.querySelector('.app_container'));
-    this.activEvent = document.querySelector('.btn_update_img');
-    // }
+      this.openPopup(document.querySelector('.app_container'));
+      this.activEvent = document.querySelector('.btn_update_img');
+
 
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
@@ -232,13 +268,33 @@ export default class Popup {
     const name = this.activEvent.closest('.list_editor').querySelector('.name_title');
     const description = this.activEvent.closest('.list_editor').querySelector('.description');
 
-    name.textContent = inputName.value;
-    description.textContent = textAreaDescription.value;
+    // this.data[actualId].name = name.textContent;
+    // this.data[actualId].description = description.textContent;
 
-    this.data[actualId].name = name.textContent;
-    this.data[actualId].description = description.textContent;
+    const xhr = new XMLHttpRequest();
 
-    this.storage.save(this.data);
+    const body = {
+      id: actualId,
+      name : inputName.value,
+      description: textAreaDescription.value
+    };
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+
+      console.log(xhr.responseText);
+    }
+
+    xhr.open('PATCH', 'http://localhost:7072/updateTicket');
+    console.log(body)
+    xhr.send(JSON.stringify(body));
+
+    xhr.addEventListener('load', () => {
+      name.textContent = JSON.parse(xhr.responseText).name;
+      description.textContent = JSON.parse(xhr.responseText).description;
+    })
+
+    // this.storage.save(this.data);
 
     this.update = false;
   }

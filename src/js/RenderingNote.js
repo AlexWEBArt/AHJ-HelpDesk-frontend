@@ -42,7 +42,7 @@ export default class RenderingNote {
     btnDelete.classList.add('btn_delete');
 
     paragraphName.textContent = item.name;
-    paragraphDescription.textContent = item.description;
+    // paragraphDescription.textContent = item.description;
     paragraphCreated.textContent = item.created;
     btnUpdate.src = edit;
     btnDelete.textContent = 'x';
@@ -60,6 +60,7 @@ export default class RenderingNote {
     listEditor.prepend(liStatus);
 
     btnUpdate.addEventListener('click', (e) => {
+      console.log(this.popup)
       this.popup.preUpdateNote(btnUpdate.closest('.list_editor'));
       this.popup.activEvent = e.target;
     });
@@ -68,19 +69,35 @@ export default class RenderingNote {
     });
 
     statusBox.addEventListener('click', () => {
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('POST', 'http://localhost:7072/statusChanged')
+
+      xhr.send(statusBox.closest('.list_editor').getAttribute('id'))
+
       if (statusBox.textContent === '') {
         statusBox.textContent = '\u2713';
         statusBox.setAttribute('status', 'true');
-        this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), true);
+        // this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), true);
       } else {
         statusBox.textContent = '';
         statusBox.setAttribute('status', 'false');
-        this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), false);
+        // this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), false);
       }
     });
 
     liName.addEventListener('click', () => {
       if (paragraphDescription.classList.contains('display_none')) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', 'http://localhost:7072/ticketById')
+
+        xhr.send(liName.closest('.list_editor').getAttribute('id'))
+
+        xhr.addEventListener('load', () => {
+          const description = JSON.parse(xhr.responseText)
+          paragraphDescription.textContent = description;
+        })
         paragraphDescription.classList.remove('display_none');
       } else {
         paragraphDescription.classList.add('display_none');
