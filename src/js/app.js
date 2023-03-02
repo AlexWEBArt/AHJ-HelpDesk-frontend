@@ -7,7 +7,7 @@ import RenderingNote from './RenderingNote';
 
 const storage = new Storage();
 // storage.clear()
-const dataBase = storage.load();
+// const dataBase = storage.load();
 
 document.querySelector('body').style.backgroundImage = `url(${background})`;
 
@@ -17,7 +17,7 @@ const renderingNote = new RenderingNote(storage, popup);
 const containerPopup = document.querySelector('.app_container');
 const btnAdd = document.querySelector('.btn_add');
 
-const xhr = new XMLHttpRequest()
+const xhr = new XMLHttpRequest();
 
 xhr.open('GET', 'http://localhost:7072/allTickets');
 xhr.withCredentials = false;
@@ -25,19 +25,19 @@ xhr.send();
 
 xhr.addEventListener('load', () => {
   if (xhr.status >= 200 && xhr.status < 300) {
-      try {
-          const data = JSON.parse(xhr.responseText);
+    try {
+      const data = JSON.parse(xhr.responseText);
 
-          if (data !== null) {
-            for (const key in data) {
-              if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
-                renderingNote.action(data[key]);
-              }
-            }
+      if (data !== null) {
+        for (const key in data) {
+          if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
+            renderingNote.action(data[key]);
           }
-      } catch (e) {
-          console.error(e);
+        }
       }
+    } catch (e) {
+      console.error(e);
+    }
   }
 });
 

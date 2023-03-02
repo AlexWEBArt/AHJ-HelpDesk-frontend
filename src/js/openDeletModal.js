@@ -1,4 +1,4 @@
-import Storage from './Storage';
+// import Storage from './Storage';
 
 export default function openDeletModal(ticket) {
   const modal = document.createElement('DIV');

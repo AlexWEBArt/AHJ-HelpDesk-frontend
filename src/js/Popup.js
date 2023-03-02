@@ -36,7 +36,7 @@ export default class Popup {
       formPopup.classList.add('form_popup');
       formPopup.setAttribute('novalidate', true);
       formPopup.method = 'POST';
-      formPopup.action= 'http://localhost:7070'
+      formPopup.action = 'http://localhost:7070';
       containerPopup.classList.add('popup_container');
       popupControlName.classList.add('popup-control');
       popupDescription.classList.add('popup-control');
@@ -190,10 +190,8 @@ export default class Popup {
   }
 
   saveInputNote() {
-    const formPopup = document.querySelector('.form_popup')
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
-
 
     if (this.data === null) {
       this.data = {};
@@ -208,8 +206,8 @@ export default class Popup {
     // this.data[id].created = Popup.getCreationDate();
 
     const body = {
-      name : inputName.value,
-      description: textAreaDescription.value
+      name: inputName.value,
+      description: textAreaDescription.value,
     };
 
     // for (let key of Object.keys(this.data[id])) {
@@ -218,37 +216,33 @@ export default class Popup {
 
     const xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
 
       console.log(xhr.responseText);
-    }
+    };
 
     xhr.open('PUT', 'http://localhost:7072/createNewTicket');
-    
+
     xhr.send(JSON.stringify(body));
 
     xhr.addEventListener('load', () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-              const data = JSON.parse(xhr.responseText);
-              console.log(data)
-              this.renderingNote.action(data);
-          } catch (e) {
-              console.error(e);
-          }
+        try {
+          const data = JSON.parse(xhr.responseText);
+          this.renderingNote.action(data);
+        } catch (e) {
+          console.error(e);
+        }
       }
     });
 
-
     // this.storage.save(this.data);
-    
   }
 
   preUpdateNote(listEditor) {
-      this.openPopup(document.querySelector('.app_container'));
-      this.activEvent = document.querySelector('.btn_update_img');
-
+    this.openPopup(document.querySelector('.app_container'));
+    this.activEvent = document.querySelector('.btn_update_img');
 
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
@@ -275,24 +269,24 @@ export default class Popup {
 
     const body = {
       id: actualId,
-      name : inputName.value,
-      description: textAreaDescription.value
+      name: inputName.value,
+      description: textAreaDescription.value,
     };
 
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
 
       console.log(xhr.responseText);
-    }
+    };
 
     xhr.open('PATCH', 'http://localhost:7072/updateTicket');
-    console.log(body)
+
     xhr.send(JSON.stringify(body));
 
     xhr.addEventListener('load', () => {
       name.textContent = JSON.parse(xhr.responseText).name;
       description.textContent = JSON.parse(xhr.responseText).description;
-    })
+    });
 
     // this.storage.save(this.data);
 
