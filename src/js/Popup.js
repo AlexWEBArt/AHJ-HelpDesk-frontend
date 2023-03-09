@@ -1,5 +1,6 @@
-import RenderingNote from './RenderingNote';
 import Tooltip from './Tooltip';
+import openDeletModal from './openDeletModal';
+import edit from '../img/update.png';
 
 export default class Popup {
   constructor(storage) {
@@ -7,8 +8,7 @@ export default class Popup {
     this.input = document.querySelector('.input_name');
     this.textArea = document.querySelector('.textarea_description');
     this.update = false;
-    this.activEvent = null;
-    this.renderingNote = new RenderingNote();
+    this.updateTicket = null;
     this.tooltipFactory = new Tooltip();
     this.storage = storage;
     this.data = this.storage.load();
@@ -77,7 +77,9 @@ export default class Popup {
 
       btnCancel.addEventListener('click', (e) => {
         e.preventDefault();
-
+        
+        this.updateTicket = null;
+        this.update = false;
         Popup.closePopup();
       });
 
@@ -139,6 +141,105 @@ export default class Popup {
         el.addEventListener('blur', elementOnBlur);
       }));
     }
+  }
+
+  renderingNote(item) {
+    const editor = document.querySelector('.list_editor_container');
+    const listEditor = document.createElement('UL');
+    const liStatus = document.createElement('LI');
+    const statusBox = document.createElement('DIV');
+    const liName = document.createElement('LI');
+    const paragraphName = document.createElement('P');
+    const paragraphDescription = document.createElement('P');
+    const liCreated = document.createElement('LI');
+    const paragraphCreated = document.createElement('P');
+    const liActionEdit = document.createElement('LI');
+    const btnUpdate = document.createElement('IMG');
+    const btnDelete = document.createElement('DIV');
+
+    listEditor.classList.add('list_editor');
+    listEditor.setAttribute('id', item.id);
+    liStatus.classList.add('status');
+    statusBox.classList.add('ticket_status');
+    statusBox.setAttribute('status', item.status);
+    if (statusBox.getAttribute('status') === 'true') {
+      statusBox.textContent = '\u2713';
+    }
+
+    liName.classList.add('name');
+    paragraphName.classList.add('name_title');
+    paragraphDescription.classList.add('description');
+    paragraphDescription.classList.add('display_none');
+
+    liCreated.classList.add('created');
+    paragraphCreated.classList.add('date_of_creation');
+    liActionEdit.classList.add('action_edit');
+    btnUpdate.classList.add('btn_update_img');
+    btnDelete.classList.add('btn_delete');
+
+    paragraphName.textContent = item.name;
+    // paragraphDescription.textContent = item.description;
+    paragraphCreated.textContent = item.created;
+    btnUpdate.src = edit;
+    btnDelete.textContent = 'x';
+
+    editor.appendChild(listEditor);
+    liActionEdit.prepend(btnDelete);
+    liActionEdit.prepend(btnUpdate);
+    listEditor.prepend(liActionEdit);
+    liCreated.prepend(paragraphCreated);
+    listEditor.prepend(liCreated);
+    liName.prepend(paragraphDescription);
+    liName.prepend(paragraphName);
+    listEditor.prepend(liName);
+    liStatus.prepend(statusBox);
+    listEditor.prepend(liStatus);
+
+    btnUpdate.addEventListener('click', (e) => {
+      console.log(e)
+      this.updateTicket = btnUpdate.closest('.list_editor')
+      this.preUpdateNote(this.updateTicket);
+      this.activEvent = e.target;
+    });
+    btnDelete.addEventListener('click', () => {
+      openDeletModal(btnDelete.closest('.list_editor'));
+    });
+
+    statusBox.addEventListener('click', () => {
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('POST', 'https://helpdesk-backend-rxb4.onrender.com/statusChanged');
+
+      xhr.send(statusBox.closest('.list_editor').getAttribute('id'));
+
+      if (statusBox.textContent === '') {
+        statusBox.textContent = '\u2713';
+        statusBox.setAttribute('status', 'true');
+        // this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), true);
+      } else {
+        statusBox.textContent = '';
+        statusBox.setAttribute('status', 'false');
+        // this.storage.statusChange(statusBox.closest('.list_editor').getAttribute('id'), false);
+      }
+    });
+
+    liName.addEventListener('click', () => {
+      if (paragraphDescription.classList.contains('display_none')) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', 'https://helpdesk-backend-rxb4.onrender.com/ticketById');
+        console.log(liName.closest('.list_editor').getAttribute('id'))
+        xhr.send(liName.closest('.list_editor').getAttribute('id'));
+
+        xhr.addEventListener('load', () => {
+          const description = JSON.parse(xhr.responseText);
+          paragraphDescription.textContent = description;
+        });
+        paragraphDescription.classList.remove('display_none');
+      } else {
+        paragraphDescription.classList.add('display_none');
+      }
+    });
   }
 
   static getError(el) {
@@ -222,7 +323,7 @@ export default class Popup {
       console.log(xhr.responseText);
     };
 
-    xhr.open('PUT', 'http://localhost:7072/createNewTicket');
+    xhr.open('PUT', 'https://helpdesk-backend-rxb4.onrender.com/createNewTicket');
 
     xhr.send(JSON.stringify(body));
 
@@ -230,7 +331,7 @@ export default class Popup {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const data = JSON.parse(xhr.responseText);
-          this.renderingNote.action(data);
+          this.renderingNote(data);
         } catch (e) {
           console.error(e);
         }
@@ -242,25 +343,42 @@ export default class Popup {
 
   preUpdateNote(listEditor) {
     this.openPopup(document.querySelector('.app_container'));
-    this.activEvent = document.querySelector('.btn_update_img');
+    const actualId = listEditor.closest('.list_editor').getAttribute('id');
 
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
 
     inputName.value = listEditor.querySelector('.name_title').textContent;
-    textAreaDescription.value = listEditor.querySelector('.description').textContent;
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) return;
+
+      console.log(xhr.responseText);
+    };
+
+    xhr.open('POST', 'https://helpdesk-backend-rxb4.onrender.com/ticketById');
+
+    xhr.send(actualId);
+
+    xhr.addEventListener('load', () => {
+      textAreaDescription.value = JSON.parse(xhr.responseText);
+    });
+
+    // textAreaDescription.value = listEditor.querySelector('.description').textContent;
 
     this.update = true;
   }
 
   updateNote() {
-    const actualId = this.activEvent.closest('.list_editor').getAttribute('id');
+    const actualId = this.updateTicket.closest('.list_editor').getAttribute('id');
 
     const inputName = document.querySelector('.input_name');
     const textAreaDescription = document.querySelector('.textarea_description');
 
-    const name = this.activEvent.closest('.list_editor').querySelector('.name_title');
-    const description = this.activEvent.closest('.list_editor').querySelector('.description');
+    const name = this.updateTicket.closest('.list_editor').querySelector('.name_title');
+    const description = this.updateTicket.closest('.list_editor').querySelector('.description');
 
     // this.data[actualId].name = name.textContent;
     // this.data[actualId].description = description.textContent;
@@ -279,7 +397,7 @@ export default class Popup {
       console.log(xhr.responseText);
     };
 
-    xhr.open('PATCH', 'http://localhost:7072/updateTicket');
+    xhr.open('PATCH', 'https://helpdesk-backend-rxb4.onrender.com/updateTicket');
 
     xhr.send(JSON.stringify(body));
 

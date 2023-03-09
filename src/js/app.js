@@ -3,7 +3,7 @@
 import background from '../img/cell.jpg';
 import Storage from './Storage';
 import Popup from './Popup';
-import RenderingNote from './RenderingNote';
+
 
 const storage = new Storage();
 // storage.clear()
@@ -12,16 +12,16 @@ const storage = new Storage();
 document.querySelector('body').style.backgroundImage = `url(${background})`;
 
 const popup = new Popup(storage);
-const renderingNote = new RenderingNote(storage, popup);
+// const renderingNote = new RenderingNote(storage, popup);
 
 const containerPopup = document.querySelector('.app_container');
 const btnAdd = document.querySelector('.btn_add');
 
 const xhr = new XMLHttpRequest();
 
-xhr.open('GET', 'http://localhost:7072/allTickets');
+xhr.open('GET', 'https://helpdesk-backend-rxb4.onrender.com/allTickets');
 xhr.withCredentials = false;
-xhr.send();
+xhr.send()
 
 xhr.addEventListener('load', () => {
   if (xhr.status >= 200 && xhr.status < 300) {
@@ -31,7 +31,7 @@ xhr.addEventListener('load', () => {
       if (data !== null) {
         for (const key in data) {
           if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
-            renderingNote.action(data[key]);
+            popup.renderingNote(data[key]);
           }
         }
       }
