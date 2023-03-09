@@ -77,7 +77,7 @@ export default class Popup {
 
       btnCancel.addEventListener('click', (e) => {
         e.preventDefault();
-        
+
         this.updateTicket = null;
         this.update = false;
         Popup.closePopup();
@@ -196,8 +196,8 @@ export default class Popup {
     listEditor.prepend(liStatus);
 
     btnUpdate.addEventListener('click', (e) => {
-      console.log(e)
-      this.updateTicket = btnUpdate.closest('.list_editor')
+      console.log(e);
+      this.updateTicket = btnUpdate.closest('.list_editor');
       this.preUpdateNote(this.updateTicket);
       this.activEvent = e.target;
     });
@@ -228,7 +228,7 @@ export default class Popup {
         const xhr = new XMLHttpRequest();
 
         xhr.open('POST', 'https://helpdesk-backend-rxb4.onrender.com/ticketById');
-        console.log(liName.closest('.list_editor').getAttribute('id'))
+        console.log(liName.closest('.list_editor').getAttribute('id'));
         xhr.send(liName.closest('.list_editor').getAttribute('id'));
 
         xhr.addEventListener('load', () => {

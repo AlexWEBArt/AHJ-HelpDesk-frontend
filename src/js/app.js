@@ -4,7 +4,6 @@ import background from '../img/cell.jpg';
 import Storage from './Storage';
 import Popup from './Popup';
 
-
 const storage = new Storage();
 // storage.clear()
 // const dataBase = storage.load();
@@ -21,7 +20,7 @@ const xhr = new XMLHttpRequest();
 
 xhr.open('GET', 'https://helpdesk-backend-rxb4.onrender.com/allTickets');
 xhr.withCredentials = false;
-xhr.send()
+xhr.send();
 
 xhr.addEventListener('load', () => {
   if (xhr.status >= 200 && xhr.status < 300) {
