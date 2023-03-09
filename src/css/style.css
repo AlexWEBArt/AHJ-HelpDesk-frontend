@@ -164,13 +164,10 @@ h1 {
 
 .popup_container {
     width: 40%;
-    margin: 100px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 20px;
     overflow: auto;
-    position: fixed;
-    top: 40%;
-    left: 40%;
-    transform: translate(-50%, -50%);
     background-color: #fff;
     border: 2px solid black;
 }

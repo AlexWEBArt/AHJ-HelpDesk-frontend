@@ -202,6 +202,7 @@ export default class Popup {
       this.activEvent = e.target;
     });
     btnDelete.addEventListener('click', () => {
+      console.log(btnDelete.closest('.list_editor'));
       openDeletModal(btnDelete.closest('.list_editor'));
     });
 

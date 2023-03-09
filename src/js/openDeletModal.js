@@ -39,9 +39,17 @@ export default function openDeletModal(ticket) {
     // new Storage().removeTicket(ticket.getAttribute('id'));
     const xhr = new XMLHttpRequest();
 
-    xhr.open('DELETE', 'http://localhost:7072/deleteTicket');
+    const deletedTicketId = ticket.getAttribute('id');
 
-    xhr.send(ticket.getAttribute('id'));
+    xhr.open('DELETE', `https://helpdesk-backend-rxb4.onrender.com/deleteTicket/?id=${deletedTicketId}`);
+
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    xhr.send();
+
+    xhr.addEventListener('load', () => {
+      console.log(JSON.parse(xhr.responseText));
+    });
 
     ticket.remove();
     document.querySelector('.popup_container').remove();
